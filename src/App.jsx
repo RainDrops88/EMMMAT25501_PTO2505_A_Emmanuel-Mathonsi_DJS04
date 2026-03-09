@@ -17,14 +17,29 @@ export default function App() {
   const [podcasts, setPodcasts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [search, setSearch] = useState("");
+  const [filteredPodcasts, setFilteredPodcasts] = useState([]);
   
   useEffect(() => {
     fetchPodcasts(setPodcasts, setError, setLoading);
   }, []);
 
+  useEffect(() => {
+    if (search.trim() !== '') {
+      const results = podcasts.filter((podcast) => podcast.title.toLowerCase().includes(search.toLowerCase()));
+      setFilteredPodcasts(results);
+    } else {
+      setFilteredPodcasts(podcasts);
+    }
+  }, [podcasts, search]);
+
+  const handleSearch = (e) => {
+    setSearch(e.target.value);
+  };
+
   return (
     <>
-      <Header />
+      <Header search={search} onSearchChange={handleSearch} />
       <Filter />
       <main>
         {loading && (
@@ -43,7 +58,7 @@ export default function App() {
         )}
 
         {!loading && !error && (
-          <PodcastGrid podcasts={podcasts} genres={genres} />
+          <PodcastGrid podcasts={filteredPodcasts} genres={genres} />
         )}
       </main>
     </>
