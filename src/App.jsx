@@ -18,6 +18,7 @@ export default function App() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [search, setSearch] = useState("");
+  const [sort, setSort] = useState("last-updated");
   const [filteredPodcasts, setFilteredPodcasts] = useState([]);
   
   useEffect(() => {
@@ -26,21 +27,39 @@ export default function App() {
 
   useEffect(() => {
     if (search.trim() !== '') {
-      const results = podcasts.filter((podcast) => podcast.title.toLowerCase().includes(search.toLowerCase()));
+      let results = podcasts.filter((podcast) => podcast.title.toLowerCase().includes(search.toLowerCase()));
+
+      if (sort === "title_a-z") {
+        results = results.sort((a, b) => a.title.localeCompare(b.title));
+      } else if (sort === "last-updated") {
+        results = results.sort((a, b) => new Date(b.updated) - new Date(a.updated));
+      }
+
       setFilteredPodcasts(results);
+
     } else {
-      setFilteredPodcasts(podcasts);
+      let results = [...podcasts];
+      if (sort === "title_a-z") {
+        results = results.sort((a, b) => a.title.localeCompare(b.title));
+      } else if (sort === "last-updated") {
+        results = results.sort((a, b) => new Date(b.updated) - new Date(a.updated));
+      }
+      setFilteredPodcasts(results);
     }
-  }, [podcasts, search]);
+  }, [podcasts, search, sort]);
 
   const handleSearch = (e) => {
     setSearch(e.target.value);
   };
 
+  const handleSort = (e) => {
+    setSort(e.target.value);
+  };
+
   return (
     <>
       <Header search={search} onSearchChange={handleSearch} />
-      <Filter />
+      <Filter sort={sort} onSortChange={handleSort} />
       <main>
         {loading && (
           <div className="message-container">
