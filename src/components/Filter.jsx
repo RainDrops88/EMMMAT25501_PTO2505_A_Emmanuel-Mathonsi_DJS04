@@ -1,8 +1,13 @@
-export default function Filter (){
+export default function Filter({ filter, onFilterChange, sort, onSortChange }) {
     return (
         <div className="filters">
-            <lebel className="filter">Filter by:</lebel>
-            <select name="all-genres" id="genre-list">
+            <label className="filter">Filter by:</label>
+            <select 
+                name="all-genres"
+                id="genre-list"
+                value={filter}
+                onChange={onFilterChange}
+                >
                 <option value="all-genres" defaultValue>All genres</option>
                 <option value="Personal Growth">Personal Growth</option>
                 <option value="Investigative Journalism">Investigative Journalism</option>
@@ -14,11 +19,16 @@ export default function Filter (){
                 <option value="News">News</option>
                 <option value="Kids and Family">Kids and Family</option>
             </select>
-            <lebel className="sort">Sort by:</lebel>
-            <select name="sort-by" id="sort-by">
+            <label className="sort">Sort by:</label>
+            <select
+                name="sort-by"
+                id="sort-by"
+                value={sort}
+                onChange={onSortChange}
+            >
                 <option value="last-updated">Last updated</option>
                 <option value="title_a-z">A-Z</option>
             </select>
         </div>
-    )
+    );
 }
