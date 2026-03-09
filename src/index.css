@@ -26,14 +26,6 @@ body {
   border-style: none;
 }
 
-.search-btn {
-  height: 40px;
-  width: 5rem;
-  margin-left: 15px;
-  border-radius: 30px;
-  border-style: none;
-  cursor: pointer;
-}
 
 
 .filters {
