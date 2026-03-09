@@ -19,6 +19,7 @@ export default function App() {
   const [error, setError] = useState(null);
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState("last-updated");
+  const [filter, setFilter] = useState("all-genres");
   const [filteredPodcasts, setFilteredPodcasts] = useState([]);
   
   useEffect(() => {
@@ -26,27 +27,34 @@ export default function App() {
   }, []);
 
   useEffect(() => {
+    let results = podcasts;
+
+    // search filter
     if (search.trim() !== '') {
-      let results = podcasts.filter((podcast) => podcast.title.toLowerCase().includes(search.toLowerCase()));
-
-      if (sort === "title_a-z") {
-        results = results.sort((a, b) => a.title.localeCompare(b.title));
-      } else if (sort === "last-updated") {
-        results = results.sort((a, b) => new Date(b.updated) - new Date(a.updated));
-      }
-
-      setFilteredPodcasts(results);
-
-    } else {
-      let results = [...podcasts];
-      if (sort === "title_a-z") {
-        results = results.sort((a, b) => a.title.localeCompare(b.title));
-      } else if (sort === "last-updated") {
-        results = results.sort((a, b) => new Date(b.updated) - new Date(a.updated));
-      }
-      setFilteredPodcasts(results);
+      results = results.filter((podcast) =>
+        podcast.title.toLowerCase().includes(search.toLowerCase())
+      );
     }
-  }, [podcasts, search, sort]);
+
+    // genre filter
+    if (filter && filter !== "all-genres") {
+      const genreObj = genres.find((genre) => genre.title === filter);
+      if (genreObj) {
+        results = results.filter((p) => p.genres.includes(genreObj.id));
+      }
+    }
+
+    // sort order
+    if (sort === "title_a-z") {
+      results = [...results].sort((a, b) => a.title.localeCompare(b.title));
+    } else if (sort === "last-updated") {
+      results = [...results].sort(
+        (a, b) => new Date(b.updated) - new Date(a.updated)
+      );
+    }
+
+    setFilteredPodcasts(results);
+  }, [podcasts, search, sort, filter]);
 
   const handleSearch = (e) => {
     setSearch(e.target.value);
@@ -56,10 +64,14 @@ export default function App() {
     setSort(e.target.value);
   };
 
+  const handleFilter = (e) => {
+    setFilter(e.target.value);
+  };
+
   return (
     <>
       <Header search={search} onSearchChange={handleSearch} />
-      <Filter sort={sort} onSortChange={handleSort} />
+      <Filter filter={filter} onFilterChange={handleFilter} sort={sort} onSortChange={handleSort} />
       <main>
         {loading && (
           <div className="message-container">
