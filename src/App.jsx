@@ -29,8 +29,8 @@ export default function App() {
  
   return (
     <>
-      <Header />
       <PodcastProvider initialPodcast={podcasts}>
+      <Header />
       <Filter />
       <main>
         {loading && (
