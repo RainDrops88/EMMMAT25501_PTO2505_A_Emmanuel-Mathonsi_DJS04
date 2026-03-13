@@ -4,10 +4,13 @@ import { genres } from "./data";
 import { fetchPodcasts } from "./api/fetchPodcasts";
 import Header from "./components/Header";
 import Filter from "./components/Filter";
+import {PodcastProvider} from "./context/PodcastContext"
+import Pagination  from "./components/Pagination"
 
 /**
  * App - The root component of the Podcast Explorer application. It handles:
  * - Fetching podcast data from a remote API
+ * - Managing search, sort and filter states
  * - Managing loading and error states
  * - Rendering the podcast grid once data is successfully fetched
  * - Displaying a header and fallback UI during loading or error
@@ -17,61 +20,18 @@ export default function App() {
   const [podcasts, setPodcasts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [search, setSearch] = useState("");
-  const [sort, setSort] = useState("last-updated");
-  const [filter, setFilter] = useState("all-genres");
-  const [filteredPodcasts, setFilteredPodcasts] = useState([]);
+
   
   useEffect(() => {
     fetchPodcasts(setPodcasts, setError, setLoading);
   }, []);
 
-  useEffect(() => {
-    let results = podcasts;
-
-    // search filter
-    if (search.trim() !== '') {
-      results = results.filter((podcast) =>
-        podcast.title.toLowerCase().includes(search.toLowerCase())
-      );
-    }
-
-    // genre filter
-    if (filter && filter !== "all-genres") {
-      const genreObj = genres.find((genre) => genre.title === filter);
-      if (genreObj) {
-        results = results.filter((p) => p.genres.includes(genreObj.id));
-      }
-    }
-
-    // sort order
-    if (sort === "title_a-z") {
-      results = [...results].sort((a, b) => a.title.localeCompare(b.title));
-    } else if (sort === "last-updated") {
-      results = [...results].sort(
-        (a, b) => new Date(b.updated) - new Date(a.updated)
-      );
-    }
-
-    setFilteredPodcasts(results);
-  }, [podcasts, search, sort, filter]);
-
-  const handleSearch = (e) => {
-    setSearch(e.target.value);
-  };
-
-  const handleSort = (e) => {
-    setSort(e.target.value);
-  };
-
-  const handleFilter = (e) => {
-    setFilter(e.target.value);
-  };
-
+ 
   return (
     <>
-      <Header search={search} onSearchChange={handleSearch} />
-      <Filter filter={filter} onFilterChange={handleFilter} sort={sort} onSortChange={handleSort} />
+      <Header />
+      <PodcastProvider initialPodcast={podcasts}>
+      <Filter />
       <main>
         {loading && (
           <div className="message-container">
@@ -83,15 +43,19 @@ export default function App() {
         {error && (
           <div className="message-container">
             <div className="error">
-              Error occurred while tyring fetching podcasts: {error}
+              Error occurred while trying fetching podcasts: {error}
             </div>
           </div>
         )}
 
         {!loading && !error && (
-          <PodcastGrid podcasts={filteredPodcasts} genres={genres} />
+          <>
+          <PodcastGrid />
+          <Pagination />
+          </>
         )}
       </main>
+      </PodcastProvider>
     </>
   );
 }
