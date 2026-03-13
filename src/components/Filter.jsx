@@ -1,4 +1,8 @@
-export default function Filter({ filter, onFilterChange, sort, onSortChange }) {
+import { useContext } from "react";
+import { PodcastContext, SORT_OPTIONS } from "../context/PodcastContext";
+
+export default function Filter() {
+    const { filter, setFilter, sort, setSort } = useContext(PodcastContext);
     return (
         <div className="filters">
             <label className="filter">Filter by:</label>
@@ -6,7 +10,7 @@ export default function Filter({ filter, onFilterChange, sort, onSortChange }) {
                 name="all-genres"
                 id="genre-list"
                 value={filter}
-                onChange={onFilterChange}
+                onChange={(e) => setFilter(e.target.value)}
                 >
                 <option value="all-genres" defaultValue>All genres</option>
                 <option value="Personal Growth">Personal Growth</option>
@@ -24,10 +28,13 @@ export default function Filter({ filter, onFilterChange, sort, onSortChange }) {
                 name="sort-by"
                 id="sort-by"
                 value={sort}
-                onChange={onSortChange}
+                onChange={(e) => setSort(e.target.value)}
             >
-                <option value="last-updated">Last updated</option>
+                <option value="default">Default</option>
+                <option value="newest">Newest</option>
+                <option value="oldest">Oldest</option>
                 <option value="title_a-z">A-Z</option>
+                <option value="title_z-a">Z-A</option>
             </select>
         </div>
     );
