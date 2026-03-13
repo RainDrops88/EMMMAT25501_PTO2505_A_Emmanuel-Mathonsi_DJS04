@@ -46,8 +46,8 @@ export function PodcastProvider({ children, initialPodcast}){
 
     // search filter
     if (search.trim() !== '') {
-        data = data.filter((podcast) =>
-        podcast.title.toLowerCase().includes(search.toLowerCase())
+        data = data.filter((data) =>
+        data.title.toLowerCase().includes(search.toLowerCase())
         );
     }
 
@@ -61,7 +61,7 @@ export function PodcastProvider({ children, initialPodcast}){
 
     // sort order
     if (sort === "default") {
-        data = [...data].sort((a, b) => new Date(b.updated) - new Date(a.updated));
+        data = [...data];
     } else if (sort === "title_a-z") {
         data = [...data].sort((a, b) => a.title.localeCompare(b.title));
     } 
