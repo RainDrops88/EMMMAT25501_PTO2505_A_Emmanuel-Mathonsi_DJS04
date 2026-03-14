@@ -1,6 +1,21 @@
 import React, { createContext, useEffect, useState } from "react";
 import { genres } from "../data";
 
+/**
+ * @typedef Podcast
+ * @property (number) id - Unique identifier
+ * @property (string) title - Podcast title
+ * @property (string) updated - last updated IOS date string
+ * @property (number[]) genres - Array of genre IDs
+ * @property (string) image - URL to podcast artwork
+ * @property (number) seasons - Number of seasons
+ * 
+ */
+
+/**
+ * Sorting options available to the user for viewing podcasts.
+ * @type {{key: string, label: string}[]}
+ */
 
 export const SORT_OPTIONS = [
     {key: "default", label: "Default"},
@@ -10,14 +25,32 @@ export const SORT_OPTIONS = [
     {key: "title_z-a", label: "Z - A"}
 ];
 
+/**
+ * React context for sharing podcast states across components.
+ * Must be used within a <PodcastProvider>
+ */
+
 export const PodcastContext = createContext();
 
+/**
+ * 
+ * PodcastProvider component wraps children in a context with state for
+ * searching, sorting, filtering and paginating podcast data 
+ */
+
+/**
+ * Dynamically calculate how many cards can fit on screen.
+ * Set a fixed 10 cards for tablet and smaller screen.
+ *
+ */
 export function PodcastProvider({ children, initialPodcast}){
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState("default");
   const [filter, setFilter] = useState("all-genres");
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
+
+  
 
   useEffect(() => {
     const calculatePageSize = () =>{
