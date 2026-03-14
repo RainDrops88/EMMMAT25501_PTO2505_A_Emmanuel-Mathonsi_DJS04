@@ -1,0 +1,18 @@
+
+
+.paginationWrapper {
+    display: flex;
+    justify-content: center;
+    text-align: center;
+    gap: 5px;
+}
+
+.pageButton {
+    padding: 0.3rem;
+    text-align: center;
+    border-radius: 50%;
+}
+
+.active {
+    background-color: rgba(8, 66, 241, 0.658);
+}
