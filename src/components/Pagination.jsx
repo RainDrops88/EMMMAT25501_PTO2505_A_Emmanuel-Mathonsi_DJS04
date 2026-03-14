@@ -15,7 +15,7 @@ export default function Pagination(){
     const pages = Array.from({ length: totalPages}, (_, i) => i + 1);
 
     return (
-        <div className="pagination-wrapper">
+        <div className={`${styles.paginationWrapper}`}>
             {pages.map((p) => (
                 <button 
                 key={p}
